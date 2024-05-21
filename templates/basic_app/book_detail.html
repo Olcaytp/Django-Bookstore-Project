@@ -1,0 +1,37 @@
+{% extends 'basic_app/base.html' %}
+{% load static %}
+
+{% block title %}
+{{ book.title }} - My Django Site
+{% endblock %}
+
+{% block body_block %}
+<div class="container mt-4">
+    <h2>{{ book.title }}</h2>
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    <p><strong>Publication Date:</strong> {{ book.publication_date }}</p>
+    <p>{{ book.description|safe }}</p>
+    <span class="badge badge-primary badge-pill">${{ book.price }}</span>
+
+    <h3>Reviews</h3>
+    <ul class="list-group mb-3">
+        {% for review in reviews %}
+            <li class="list-group-item">
+                <p>{{ review.comment }}</p>
+                <small>Reviewed by {{ review.user.username }} on {{ review.created_at }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if user.is_authenticated %}
+        <h4>Add a Review</h4>
+        <form method="post" action="{% url 'basic_app:book_detail' book.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'basic_app:user_login' %}">Log in</a> to add a review.</p>
+    {% endif %}
+</div>
+{% endblock %}

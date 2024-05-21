@@ -1,0 +1,70 @@
+{% extends 'basic_app/base.html' %}
+{% load static %}
+
+{% block title %}
+Home - My Django Site
+{% endblock %}
+
+{% block body_block %}
+<div class="container mt-4">
+    <h1>Welcome to My Django Site!</h1>
+    <p>This is the home page.</p>
+    <div class="container mt-4">
+        <h2>Search Books</h2>
+        <form method="GET" action="{% url 'book_search' %}">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search books by title, author, or keyword" name="q" aria-label="Search books" aria-describedby="search-button">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit" id="search-button">Search</button>
+                </div>
+            </div>
+        </form>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Latest Books</h2>
+            {% if user.is_authenticated %}
+                <a class="btn btn-success" href="{% url 'basic_app:add_book' %}">Add Books</a>
+            {% endif %}
+        </div>
+        
+        <ul class="list-group">
+            {% for book in latest_books %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <a href="{% url 'book_detail' book.id %}"><h3>{{ book.title }}</h3></a>
+                        <p><strong>Author:</strong> {{ book.author }}</p>
+                        <p><strong>Publication Date:</strong> {{ book.publication_date }}</p>
+                        <p>{{ book.description|safe }}</p>
+                    </div>
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge badge-primary badge-pill mr-3">$ {{ book.price }}</span>
+                            {% if user.is_authenticated %}
+                                <a class="btn btn-sm btn-warning mr-2" href="{% url 'basic_app:edit_book' book.id %}">Edit</a>
+                                <form method="POST" action="{% url 'basic_app:delete_book' book.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center">
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'basic_app:add_to_cart' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="book_id" value="{{ book.id }}">
+                                    <div class="form-group">
+                                        <label for="quantity">Quantity:</label>
+                                        <input type="number" id="quantity" name="quantity" min="1" value="1" class="form-control" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

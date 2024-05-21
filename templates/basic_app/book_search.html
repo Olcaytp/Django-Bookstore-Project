@@ -1,0 +1,15 @@
+{% extends 'basic_app/base.html' %}
+{% block body_block %}
+<h1>Search Results</h1>
+<form method="GET" action="{% url 'book_search' %}">
+  <input type="text" name="q" value="{{ query }}">
+  <button type="submit">Search</button>
+</form>
+<ul>
+  {% for book in books %}
+    <li><a href="{% url 'book_detail' book.id %}">{{ book.title }}</a></li>
+  {% empty %}
+    <li>No books found</li>
+  {% endfor %}
+</ul>
+{% endblock %}

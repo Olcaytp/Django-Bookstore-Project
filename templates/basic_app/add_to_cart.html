@@ -1,0 +1,27 @@
+{% extends 'basic_app/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Book Detail - My Django Site
+{% endblock %}
+
+{% block body_block %}
+<div class="container mt-4">
+    <h2>{{ book.title }}</h2>
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    <p><strong>Publication Date:</strong> {{ book.publication_date }}</p>
+    <p>{{ book.description|safe }}</p>
+    <p><strong>Price:</strong> ${{ book.price }}</p>
+
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'basic_app:add_to_cart' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="hidden" name="book_id" value="{{ book.id }}">
+            <button type="submit" class="btn btn-primary">Add to Cart</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'basic_app:user_login' %}">Log in</a> to add this book to your cart.</p>
+    {% endif %}
+</div>
+{% endblock %}

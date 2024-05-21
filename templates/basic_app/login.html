@@ -1,0 +1,23 @@
+{% extends 'basic_app/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Login - My Django Site
+{% endblock %}
+
+{% block body_block %}
+<div class="container mt-4">
+    <h2>Login</h2>
+    <form action="{% url 'basic_app:user_login' %}" method="post">
+        {% csrf_token %}
+        {% if error_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
+        {{ login_form|crispy }}
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+{% endblock %}
