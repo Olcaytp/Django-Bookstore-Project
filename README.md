@@ -94,13 +94,14 @@ To run this project locally, follow these steps:
 ## Screenshots
 
 ### Home Page
-![Home Page](screenshots/home_page.png)
+![Home Page](https://github.com/Olcaytp/Django-Bookstore-Project/blob/main/assets/home-1.png)
+![Home Page](https://github.com/Olcaytp/Django-Bookstore-Project/blob/main/assets/home-2.png)
 
 ### Book Detail Page
-![Book Detail Page](screenshots/book_detail_page.png)
+![Book Detail Page](https://github.com/Olcaytp/Django-Bookstore-Project/blob/main/assets/detail-1.png)
 
 ### Shopping Cart
-![Shopping Cart](screenshots/shopping_cart.png)
+![Shopping Cart](https://github.com/Olcaytp/Django-Bookstore-Project/blob/main/assets/shopping-cart.png)
 
 ## Contributing
 
