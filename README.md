@@ -117,4 +117,4 @@ There are a few things to add to this project
 
 - after purchase completion mail will be sent to users email
 - at navbar cart items number can be set
-- ...
+- adding book image may be good option
