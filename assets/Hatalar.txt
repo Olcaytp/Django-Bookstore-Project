@@ -1,0 +1,13 @@
+Hatalar
+
+1- TypeError: Provider.sentence() got an unexpected keyword argument 'nb_sentences'
+
+The error "TypeError: Provider.sentence() got an unexpected keyword argument 'nb_sentences'" indicates that the version of Faker you're using might have a different API for generating sentences compared to the documentation you're referring to.
+
+2- AttributeError: 'Generator' object has no attribute 'generate'
+This error occurs when you're using an older version of Faker (likely below 2.0.0) and trying to use the generate method, which is available in newer versions.
+
+3- TypeError: 'Post' object is not subscriptable
+The error "TypeError: 'Post' object is not subscriptable" indicates that you're trying to use square brackets ([]) to access elements of a Post object, which isn't possible. 
+
+4- 

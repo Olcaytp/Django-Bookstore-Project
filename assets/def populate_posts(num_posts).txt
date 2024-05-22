@@ -1,0 +1,17 @@
+def populate_posts(num_posts):
+    fake = Faker()
+
+    for _ in range(num_posts):
+        title = fake.sentence()
+        content = fake.text()
+        post = Post.objects.create(title=title, content=content)
+        print(f"Created post: {post.title}")
+
+        post = Post(title=title, content=content)
+        post.save()
+
+if __name__ == "__main__":
+    num_posts = int(input("How many posts would you like to create? "))
+    print("Populating the database... please wait.")
+    populate_posts(num_posts)
+    print("Populating complete.")

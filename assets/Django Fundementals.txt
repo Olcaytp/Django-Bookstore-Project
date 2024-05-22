@@ -1,0 +1,164 @@
+Django Auth User Signup and Login:  https://medium.com/@devsumitg/django-auth-user-signup-and-login-7b424dae7fab
+
+bookstore django app:
+	https://techvidvan.com/tutorials/book-store-management-system-python-django-project/
+
+Sadik Truran Django Dersleri:
+	https://www.youtube.com/playlist?list=PLXuv2PShkuHzrqh-_ZYuDcHZcoZfeAnad
+
+
+models.py
+- class Blog(models.Model):
+	title = models.CharField(max_length=200) #null_False default olarak eklenir, degistirmek istersek virgul ekleyerek null=True yazabiliriz.
+	
+- class Category(models.Model):
+	name= models.CharField(max_length=150)
+	
+migrations
+	- py manage.py migrate #first of all we migrate beginning applications migrations
+	- we can see database easliy with sqlitebrowser application.
+	- next step is making migrations of our model with this code:py manage.py makemigrations
+	- then again we need to call this code renew the all migrations with this code: 
+	py manage.py migrate
+
+- after creating models, we can add datas through the python shell with this commands:
+	py manage.py shell	
+	>> from blog.models import Blog #first we need model to add data
+	>> b1 = Blog(title="", etc...) #defining the parameters
+	>> b1 #shows the objects
+	>> b1.save() #saves the data to model and we can see the objects at sqlitebrowser app
+	>> Blog.objects.all() # we can see the objects on the shell
+	or
+	>> Bloglar = Blog.objects.all()
+	>> Bloglar
+	>> Bloglar[0].title
+	>> quit() or exit()
+	>> django queries for more informations
+	
+views.py
+	- First of all at the app's directory views.py file we need to import model objects like this:
+	from blog.models import Blog
+	
+	def index(request):
+		context = {
+			"blogs": Blog.objects.all()
+			}
+			return render(request, "blog/index.html", context)
+			#with these codes we send datas to the index page
+			
+	def blog_details(request, id):
+		blog = Blog.objects.get(id=id)
+		return render(request, "blog/blog-details.html", {
+		"blog" : blog
+		})
+
+admin.py
+- from .models import Blog, Category
+	admin.site.register(Blog)
+	admin.site.register(Category)
+
+- and we can configure the admin display like:
+	class BlogAdmin(admin.ModelAdmin):
+		list_display = ("title", "is_active", "is_home",)
+		list_editable = ("is_active", "is_home",)
+		search_fields = ("title", "description",)
+		radonly_fields = ("description",)
+		
+	admin.site.register(Blog, BlogAdmin)
+	
+-SlugField
+	Temel amacı, web sitenizdeki içerik için daha temiz, daha okunabilir ve arama motoru dostu URL'ler oluşturmaktır.
+	Bir modelde SlugField kullanmak için aşağıdaki adımları izleyin:
+
+	- Modele models.SlugField ekleyin.
+	- İsteğe bağlı olarak, max_length, populate_from, allow_unicode gibi alan özelliklerini ayarlayın.
+	- Veritabanı şemasını güncellemek için python manage.py makemigrations ve python manage.py migrate komutlarını çalıştırın.
+	
+	from django.db import models
+
+	class BlogPost(models.Model):
+		title = models.CharField(max_length=255)
+		slug = models.SlugField(null=False, blank=True, max_length=255, unique=True, db_index=True, editable=False) #db is written for database indexing
+		body = models.TextField()
+		# ...
+		
+		def __str__(self):
+			return f"{self.title}"
+		
+		def save(self, *args, **kwargs)
+			self.slug = slugify(self.title)
+			super().save(*args, **kwargs)
+	
+	Bu örnekte, BlogPost modeli title adlı bir CharField ve slug adlı bir SlugField içerir. slug alanı benzersiz olacak şekilde ayarlanmıştır, yani aynı blog yazısı için birden fazla slug kullanılamaz.
+
+	SlugField'i kullanarak URL'ler oluşturmak için, get_absolute_url() yöntemini kullanın. Örneğin:
+	
+	blog_post = BlogPost.objects.get(pk=1)
+	url = blog_post.get_absolute_url()
+	print(url)  # Output: /blog/my-first-blog-post/
+
+- Then do the migrations process
+
+- Next slug point is blog-detail url, go to urls.py
+	change this way: path("blogs/<slug:slug>", views.blog_details, name="blog_details")
+	
+	and go to the vies.py file, cgange id to slug in def blog-details function.
+
+	and if you have base html like _blog.html, change other id s to slug
+
+-image Upload
+	- install Pillow library: python -m pip install Pillow
+	if we want to upload only image we use this code blocks in the models.py:
+	class Blog(models.Model):
+		image = models.ImageField(upload_to="blogs") or for fileuploading use models.FileUpload()
+		#create uploads folder at project directory and configure it at the setttings.py file like:
+		MEDIA_ROOT = BASE_DIR / "uploads"
+		MEDIA_URL = "/images/" #this is fake name for images urls
+		
+	- then makemigration & migration process
+	- next step is to add media configurations to the urls.py file like:
+		urlpatterns = [] + static(settings.MEDIA_URL, document_root = settings.MEDIA_URL)
+		and imports part
+	
+	- to see the pictures at html page we need to configure this:
+		<img src="{{blog.image.url }}" alt="" class="">
+
+html editor for description admin panel
+	- install ckeditor to good configure the writes: pip3 install django-ckeditor
+	- add ckeditor to INSTALLED_APPS = []
+	- and we can use this ckeditor at the models.pt file like:
+	from ckeditor.fields import RichTextField
+	
+	class Blog(models.Model):
+		description = RichTextField()
+	- and after every changes in the models.py restart migration process
+	-lastly at the html page we need to add | safe pipe
+	- more information: built-in template tags and filters
+
+
+- Static Files:
+First you should configure settings.py:
+INSTALLED_APPS = [
+    ...
+    'django.contrib.staticfiles',
+    'CourseApp',
+    'UserApp',
+    'ckeditor',
+]
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'Europe/Stockholm'
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "CourseApp/static",
+]
+veya 
+STATICFILES_DIRS = [STATIC_DIR] =>?
+then at the html file the things are:
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'CourseApp/courselist.css' %}">
+
+
+	

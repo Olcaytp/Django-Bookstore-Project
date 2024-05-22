@@ -1,0 +1,6 @@
+week-8 - Django Notes
+
+	- User Authentication
+	- pip install bcrypt
+	- pip install Django[argon2]
+	
